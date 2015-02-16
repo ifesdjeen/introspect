@@ -5,16 +5,20 @@
            [net.bytebuddy.instrumentation MethodDelegation]
            [net.bytebuddy.dynamic ClassLoadingStrategy ClassLoadingStrategy$Default]
            [net.bytebuddy.dynamic.loading ClassReloadingStrategy]
-           [introspect LoggingAFn]
+           [introspect LoggingAFn IFnInterceptor]
            [clojure.lang AFn]))
 
 (defn asd
   []
   (+ 1 2 ))
 
+(defn asd2
+  [a b]
+  (+ a b))
 (defn a
   []
-  (fn [a b] (+ a b)))
+  (let [zz 1]
+    (fn [a b] (+ a b zz))))
 
 (def b (a))
 ;;
@@ -45,5 +49,18 @@
   )
 
 
+(defn try-to-implement-via-class-listings
+  []
+  (ByteBuddyAgent/installOnOpenJDK)
+  (let [byte-buddy (ByteBuddy.)]
+    (-> byte-buddy
+        (.redefine AFn)
+        (.method (ElementMatchers/named "invoke"))
+        (.intercept (MethodDelegation/to IFnInterceptor))
+        (.make)
+        ;; (.getClassLoader (type asd))
+        (.load (.getClassLoader AFn) (ClassReloadingStrategy/fromInstalledAgent)) ;; (ClassLoadingStrategy$Default/WRAPPER)
+        )
+    ))
 ;; http://docs.oracle.com/javase/7/docs/api/java/lang/ClassLoader.html
 ;; (.getName (type b))
