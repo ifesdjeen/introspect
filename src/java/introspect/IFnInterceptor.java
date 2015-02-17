@@ -14,6 +14,7 @@ public class IFnInterceptor {
 																 @Origin Method method) {
     try {
 			System.out.println("PRINTLN");
+			// System.out.println(allArguments);
 
       method.invoke(allArguments);
     } catch (IllegalAccessException e) {

@@ -54,12 +54,13 @@
   (ByteBuddyAgent/installOnOpenJDK)
   (let [byte-buddy (ByteBuddy.)]
     (-> byte-buddy
-        (.redefine AFn)
+        (.redefine (type asd))
         (.method (ElementMatchers/named "invoke"))
         (.intercept (MethodDelegation/to IFnInterceptor))
         (.make)
-        ;; (.getClassLoader (type asd))
-        (.load (.getClassLoader AFn) (ClassReloadingStrategy/fromInstalledAgent)) ;; (ClassLoadingStrategy$Default/WRAPPER)
+        ;;
+        (.load (.getClassLoader (type asd))
+               (ClassLoadingStrategy$Default/WRAPPER)) ;;
         )
     ))
 ;; http://docs.oracle.com/javase/7/docs/api/java/lang/ClassLoader.html
