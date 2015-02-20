@@ -12,6 +12,7 @@ public class IFnInterceptor {
   @RuntimeType
   public static Object intercept(@AllArguments Object[] allArguments,
 																 @Origin Method method) {
+		System.out.println("PRINTLN");
     try {
 			System.out.println("PRINTLN");
 			// System.out.println(allArguments);
