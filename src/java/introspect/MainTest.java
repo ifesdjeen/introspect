@@ -40,4 +40,8 @@ public class MainTest {
             .installOn(ByteBuddyAgent.installOnOpenJDK());
   }
 
+  public static void main(String[] name) {
+    initialize("FnImpl");
+    System.out.println(new FnImpl().invoke(1, 2));
+  }
 }

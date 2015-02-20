@@ -1,4 +1,5 @@
 (ns introspect.core
+  (:gen-class)
   (:import [net.bytebuddy ByteBuddy]
            [net.bytebuddy.agent ByteBuddyAgent]
            [net.bytebuddy.matcher ElementMatchers]
@@ -6,7 +7,7 @@
 
            [net.bytebuddy.dynamic ClassLoadingStrategy ClassLoadingStrategy$Default]
            [net.bytebuddy.dynamic.loading ClassReloadingStrategy]
-           [introspect LoggingAFn IFnInterceptor MainTest]
+           [introspect LoggingAFn IFnInterceptor MainTest FnImpl]
            [clojure.lang AFn]))
 
 (defn asd
@@ -32,3 +33,9 @@
 ;; First, load:
 ;; (MainTest/initialize "introspect.core")
 ;; (compile 'introspect.core)
+
+(defn -main [& args]
+  (compile 'introspect.core)
+  (MainTest/initialize "introspect.core")
+  (compile 'introspect.core)
+  (println (asd2 1 2)))

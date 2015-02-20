@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
+  :main introspect.core
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [net.bytebuddy/byte-buddy-agent "0.5.2"]
                  [net.bytebuddy/byte-buddy "0.5.2"]])
