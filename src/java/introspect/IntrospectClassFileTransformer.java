@@ -18,7 +18,7 @@ public class IntrospectClassFileTransformer implements ClassFileTransformer {
                           ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
     // fixme better exclude for system classes
-    if ( className.startsWith("codecentric") && !className.contains("loading") && !className.contains("eval") && !className.contains("_main") ) {
+    if ( className.startsWith("introspect_test") && !className.contains("loading") && !className.contains("eval") && !className.contains("_main") ) {
       ClassReader classReader = new ClassReader(classfileBuffer);
       ClassWriter classWriter = new ClassWriter(classReader, 0);
       ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
