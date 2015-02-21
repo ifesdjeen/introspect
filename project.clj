@@ -3,9 +3,15 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :source-paths ["src/clj"]
+
   :java-source-paths ["src/java"]
-  :main introspect.core
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [net.bytebuddy/byte-buddy-agent "0.5.2"]
+
+  :javac-options ["-target" "1.6" "-source" "1.6" "-Xlint:-options"]
+
+  :manifest {"Premain-class" "introspect.Premain"
+             "Agent-class" "introspect.Premain"
+             "Can-Redefine-Classes" "true"
+             "Can-Retransform-Classes" "true"}
+
+  :dependencies [[net.bytebuddy/byte-buddy-agent "0.5.2"]
                  [net.bytebuddy/byte-buddy "0.5.2"]])
