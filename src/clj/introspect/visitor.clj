@@ -1,4 +1,5 @@
 (ns introspect.visitor
+  (:require [introspect.stacktrace :as stacktrace])
   (:gen-class
    :name    introspect.Visitor
    :methods [#^{:static true} [methodEntered [String] void]
@@ -45,17 +46,39 @@
 
 
 
-(def time-stack (atom ()))
+(def method-calls (atom {}))
 
-(def spaces (atom 0))
+(def format-signature #(str "(" (clojure.string/join " " %) ")"))
+(def join-with-newline #(clojure.string/join "\n\t" %))
 
 (defn generic-method-entered
   [class-name args]
-  (println class-name "was called with" args)
-  )
+  (let [current-call-types  (map type args)
+        previous-call-types (get @method-calls class-name)]
+    (when (and (not (empty? previous-call-types))
+               (nil? (get previous-call-types current-call-types)))
+      (println
+
+       (str
+        "\nDetected unusual method call:"
+        class-name
+        "was called with arguments \n\t"
+        (format-signature current-call-types)
+        "\nprevious calls were with\n\t"
+        (join-with-newline (map format-signature previous-call-types))
+        "\nStacktrace:\n")
+       (stacktrace/format-stack-trace (.getStackTrace (Thread/currentThread)))))
+
+    (swap! method-calls
+           update-in
+           [class-name]
+           #(conj (or % #{}) current-call-types))
+    ))
+
+
 (defn -methodEntered
   ([class-name]
-     (println "no args" class-name))
+     (generic-method-entered class-name []))
   ([class-name arg1]
      (generic-method-entered class-name [arg1]))
   ([class-name arg1 arg2]
@@ -128,4 +151,12 @@
 
 (defn -methodLeft
   [class-name ret]
-  (println class-name "return value was" ret))
+  ;; (println class-name "return value was" ret)
+  )
+
+
+;; (Runtime/getRuntime )
+
+
+
+;; (println (format-stack-trace (.getStackTrace (Thread/currentThread))))
