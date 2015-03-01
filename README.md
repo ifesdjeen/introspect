@@ -4,6 +4,17 @@ Introspect is a Clojure library that helps library builders to track
 input and output values and their types to avoid unnecessary type 
 errors.
 
+## Usage 
+
+In order to use introspect, just add an Introspect dependency and 
+
+```
+:jvm-opts ^:replace ["-noverify"]
+```
+
+in order to avoid strict bytecode verification, since bytecode is being
+modified at runtime.
+
 ## Example
 
 There's a function in your program that is (accidentally) being called 
