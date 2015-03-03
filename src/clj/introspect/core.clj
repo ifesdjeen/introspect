@@ -1,8 +1,16 @@
 (ns introspect.core
-  (:import [introspect IntrospectProfilingAgent Interceptor])
+  (:import [introspect IntrospectProfilingAgent Interceptor]
+           [java.lang.instrument Instrumentation])
   (:require [introspect.stacktrace :as stacktrace]))
 
-(def format-signature #(str "(" (clojure.string/join " -> " %) ")"))
+
+
+(defn format-signature
+  [types]
+  (str "(" (->> types
+                (map #(.getName %))
+                (clojure.string/join " -> ")) ")"))
+
 (def join-with-newline #(clojure.string/join "\n\t" %))
 
 (defn get-type
@@ -13,6 +21,8 @@
 
 
 ;; (def method-calls (atom {}))
+
+(def ^:dynamic *print-stacktraces* false)
 
 (let [method-calls (atom {})]
 
@@ -28,13 +38,14 @@
         (println
          (str
           "\nDetected unusual method call: "
-          (class class-name)
+          (.getName (class class-name))
           " was called with arguments \n\t"
           (format-signature current-call-types)
           "\nprevious calls were with\n\t"
-          (join-with-newline (map format-signature previous-call-types))
-          "\nStacktrace:\n")
-         (stacktrace/format-stack-trace (.getStackTrace (Thread/currentThread)))))
+          (join-with-newline (map format-signature previous-call-types))))
+        (when *print-stacktraces*
+          (println "\nStacktrace:\n"
+                   (stacktrace/format-stack-trace (.getStackTrace (Thread/currentThread))))))
 
       (swap! method-calls
              update-in
