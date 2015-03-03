@@ -114,7 +114,12 @@ Which would yield something like:
   practices
   * track calling threads, possibly tracking interleaving
   * add ignores for cases when untypical calls are intended 
-  
+
+## Credit
+
+Inspired by codecentric [Allocation Tracker](https://github.com/codecentric/allocation-tracker/), 
+props to it's [authors](https://github.com/codecentric/allocation-tracker/graphs/contributors).
+
 ## License
 
 Copyright © 2013 Alex Petrov
