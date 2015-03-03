@@ -12,49 +12,49 @@ import java.lang.instrument.Instrumentation;
 
 public class IntrospectProfilingAgent {
 
-	private static final Instrumentation instrumentation = ByteBuddyAgent.installOnOpenJDK();
+  private static final Instrumentation instrumentation = ByteBuddyAgent.installOnOpenJDK();
 
   public static void initializeAgent(String name) {
     new AgentBuilder.Default()
-            .withListener(new AgentBuilder.Listener() {
-              @Override
-              public void onTransformation(DynamicType dynamicType) {
+      .withListener(new AgentBuilder.Listener() {
+          @Override
+          public void onTransformation(DynamicType dynamicType) {
 
-              }
+          }
 
-              @Override
-              public void onError(String s,
-                                  Throwable throwable) {
-//                System.out.println(s);
-//                throwable.printStackTrace();
-              }
+          @Override
+          public void onError(String s,
+                              Throwable throwable) {
+            //                System.out.println(s);
+            //                throwable.printStackTrace();
+          }
 
-              @Override
-              public void onIgnored(String s) {
+          @Override
+          public void onIgnored(String s) {
 
-              }
+          }
 
-              @Override
-              public void onComplete(String s) {
+          @Override
+          public void onComplete(String s) {
 
-              }
-            })
-            .rebase(ElementMatchers.nameContains(name)
-										.and(ElementMatchers.not(ElementMatchers.nameContains("load")))
-										.and(ElementMatchers.not(ElementMatchers.nameContains("auto")))
-										.and(ElementMatchers.not(ElementMatchers.nameContains("init"))))
+          }
+        })
+      .rebase(ElementMatchers.nameContains(name)
+              .and(ElementMatchers.not(ElementMatchers.nameContains("load")))
+              .and(ElementMatchers.not(ElementMatchers.nameContains("auto")))
+              .and(ElementMatchers.not(ElementMatchers.nameContains("init"))))
 
-            .transform(new AgentBuilder.Transformer() {
-              @Override
-              public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder,
-                                                      TypeDescription typeDescription) {
-
-                return builder
-									.method(ElementMatchers.named("invoke"))
-                               .intercept(MethodDelegation.to(Interceptor.class));
-              }
-            })
-            .installOn(instrumentation);
+      .transform(new AgentBuilder.Transformer() {
+          @Override
+            public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder,
+                                                    TypeDescription typeDescription) {
+            System.out.printf("Transforming %s", typeDescription.getName());
+            return builder
+              .method(ElementMatchers.named("invoke"))
+              .intercept(MethodDelegation.to(Interceptor.class));
+          }
+        })
+      .installOn(instrumentation);
   }
 
 }

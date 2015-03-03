@@ -37,4 +37,5 @@ public class Interceptor {
 	public static void setCallback(IFn fn) {
 		callback = fn;
 	}
+
 }
