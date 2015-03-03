@@ -23,7 +23,7 @@
                                               (System/getProperty "user.dir")
                                               "/target/introspect-1.0.0-SNAPSHOT-standalone.jar=introspect.helpers.simple-functions")]
                                }}
-  :dependencies      [[org.clojure/clojure "1.6.0"]
-                      [net.bytebuddy/byte-buddy-agent "0.6-SNAPSHOT"]
-                      [net.bytebuddy/byte-buddy "0.6-SNAPSHOT"]]
+  :dependencies      [[org.clojure/clojure            "1.6.0"]
+                      [net.bytebuddy/byte-buddy-agent "0.5.3"]
+                      [net.bytebuddy/byte-buddy       "0.5.3"]]
 )
