@@ -1,5 +1,14 @@
 # Introspect
 
+```
+ _       _                                 _
+(_)_ __ | |_ _ __ ___  ___ _ __   ___  ___| |_
+| | '_ \| __| '__/ _ \/ __| '_ \ / _ \/ __| __|
+| | | | | |_| | | (_) \__ \ |_) |  __/ (__| |_
+|_|_| |_|\__|_|  \___/|___/ .__/ \___|\___|\__|
+                          |_|
+```
+
 Introspect is a Clojure library that helps library builders to track 
 input and output values and their types to avoid unnecessary type 
 errors.
@@ -9,7 +18,7 @@ errors.
 In order to use introspect, just add an Introspect dependency and 
 
 ```
-:jvm-opts ^:replace ["-noverify"]
+:jvm-opts ["-noverify"]
 ```
 
 in order to avoid strict bytecode verification, since bytecode is being
