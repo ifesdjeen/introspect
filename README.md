@@ -82,7 +82,6 @@ Stacktrace:
                                introspect.Visitor                                       :                         -1
         introspect_tests.core$some_crazy_function                               core.clj:                         -1
               introspect_tests.core_test$fn__2945                          core_test.clj:                          8
-...         
 ```
 
 We can't make any assumptions on which call stack is correct. We can only say you
@@ -93,7 +92,7 @@ called it once one way, and now you're callng it some other way for some reason.
 You can also query the type of the function after it's been invoked at least once,
 for all the types it's been called with:
 
-``clojure
+```clojure
 (ns my-ns
   (:require [introspect.core :refer t])
   
