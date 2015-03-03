@@ -55,6 +55,12 @@
   (defn get-method-calls
     []
     @method-calls)
+
+  (defn t
+    [f]
+    (doseq [call (get @method-calls f)]
+      (println (format-signature call)))
+    )
   )
 
 (defn introspect-namespace
