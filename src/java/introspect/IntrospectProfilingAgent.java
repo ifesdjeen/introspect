@@ -16,29 +16,6 @@ public class IntrospectProfilingAgent {
 
   public static void initializeAgent(String name) {
     new AgentBuilder.Default()
-      .withListener(new AgentBuilder.Listener() {
-          @Override
-          public void onTransformation(DynamicType dynamicType) {
-
-          }
-
-          @Override
-          public void onError(String s,
-                              Throwable throwable) {
-            //                System.out.println(s);
-            //                throwable.printStackTrace();
-          }
-
-          @Override
-          public void onIgnored(String s) {
-
-          }
-
-          @Override
-          public void onComplete(String s) {
-
-          }
-        })
       .rebase(ElementMatchers.nameContains(name)
               .and(ElementMatchers.not(ElementMatchers.nameContains("load")))
               .and(ElementMatchers.not(ElementMatchers.nameContains("auto")))

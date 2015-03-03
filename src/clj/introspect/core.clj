@@ -7,9 +7,11 @@
 
 (defn format-signature
   [types]
-  (str "(" (->> types
-                (map #(.getName %))
-                (clojure.string/join " -> ")) ")"))
+  (str "("
+       (->> types
+            (map #(.getName %))
+            (clojure.string/join " -> "))
+       ")"))
 
 (def join-with-newline #(clojure.string/join "\n\t" %))
 
