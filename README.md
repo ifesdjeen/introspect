@@ -114,7 +114,7 @@ Which would yield something like:
   practices
   * track calling threads, possibly tracking interleaving
   * add ignores for cases when untypical calls are intended 
-  
+
 ## License
 
 Copyright © 2013 Alex Petrov
