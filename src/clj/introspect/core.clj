@@ -1,9 +1,9 @@
 (ns introspect.core
   (:import [introspect IntrospectProfilingAgent Interceptor]
            [java.lang.instrument Instrumentation])
-  (:require [introspect.stacktrace :as stacktrace]))
-
-
+  (:require [introspect.stacktrace :as stacktrace]
+            [introspect.type       :as itype]
+            [clojure.set           :as s]))
 
 (defn format-signature
   [types]
@@ -15,22 +15,14 @@
 
 (def join-with-newline #(clojure.string/join "\n\t" %))
 
-(defn get-type
-  [a]
-  (if (fn? a)
-    clojure.lang.IFn
-    (type a)))
-
-
 ;; (def method-calls (atom {}))
 
 (def ^:dynamic *print-stacktraces* false)
 
 (let [method-calls (atom {})]
-
   (defn introspect-function
     [class-name args return-value]
-    (let [current-call-types  (conj (map get-type args) (type return-value))
+    (let [current-call-types  (conj (map type args) (type return-value))
           previous-call-types (get @method-calls class-name)]
       ;; (println current-call-types)
       (when (and (not (empty? previous-call-types))
@@ -63,6 +55,8 @@
     (doseq [call (get @method-calls f)]
       (println (format-signature call)))
     )
+
+  (Interceptor/setCallback introspect-function)
   )
 
 (defonce introspected-namespaces (atom #{}))
@@ -78,23 +72,6 @@
     (compile namespace-sym))
   ;; v.ns.name.name.replace('.', '/').replace('-','_') + "$" + munge(v.sym.name);
   )
-
-(Interceptor/setCallback introspect-function)
-
-(defn same-arity?
-  [input1 input2]
-  (= (count input1)
-     (count input2)))
-
-(defn same-type?
-  [t1 t2]
-  (= (class t1)
-     (class t2)))
-
-(defn subtype?
-  [t1 t2]
-  (instance? (class t1)
-             (class t2)))
 
 
 (gen-class
