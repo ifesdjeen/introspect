@@ -4,9 +4,9 @@
   :license           {:name "Eclipse Public License"
                         :url  "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :test-paths        ["test/clj"]
+  :test-paths        ["test/clj" "test/java"]
   :source-paths      ["src/clj"]
-  :java-source-paths ["src/java"]
+  :java-source-paths ["src/java" "test/java"]
   :aot               [introspect.core]
 
   :manifest          {"Premain-class"           "introspect.Premain"
