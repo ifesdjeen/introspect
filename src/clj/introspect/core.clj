@@ -53,8 +53,7 @@
   (defn t
     [f]
     (doseq [call (get @method-calls f)]
-      (println (format-signature call)))
-    )
+      (println (format-signature call))))
 
   (Interceptor/setCallback introspect-function)
   )
