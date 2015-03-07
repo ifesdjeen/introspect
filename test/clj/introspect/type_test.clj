@@ -1,13 +1,11 @@
 (ns introspect.type-test
   (:import [introspect.helpers FooChildA FooChildB ParentClass ChildClass])
   (:require [clojure.test :refer :all]
-            [introspect.type :refer :all]
-            [introspect.helpers.simple-functions :as h1]))
+            [introspect.type :refer :all]))
 
 (deftest have-common-ancestor-test
   (is (have-common-ancestor? (type (FooChildA.))
-                             (type (FooChildB.))))
-  )
+                             (type (FooChildB.)))))
 
 (deftest subtype-test
   (is (subtype? (type (ParentClass.))
