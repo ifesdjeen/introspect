@@ -25,7 +25,7 @@ public class IntrospectProfilingAgent {
           @Override
             public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder,
                                                     TypeDescription typeDescription) {
-            System.out.printf("Transforming %s", typeDescription.getName());
+            System.out.printf("Transforming %s\n", typeDescription.getName());
             return builder
               .method(ElementMatchers.named("invoke"))
               .intercept(MethodDelegation.to(Interceptor.class));
