@@ -17,6 +17,7 @@ public class IntrospectProfilingAgent {
   public static void initializeAgent(String name) {
     new AgentBuilder.Default()
       .rebase(ElementMatchers.nameContains(name)
+              .and(ElementMatchers.nameContains("$"))
               .and(ElementMatchers.not(ElementMatchers.nameContains("load")))
               .and(ElementMatchers.not(ElementMatchers.nameContains("auto")))
               .and(ElementMatchers.not(ElementMatchers.nameContains("init"))))
