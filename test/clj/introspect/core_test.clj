@@ -14,3 +14,10 @@
                                      #"\n"))]
     (not (nil? (get types  "(java.lang.Long -> java.lang.Long -> java.lang.Long)")))
     (not (nil? (get types  "(java.lang.Long -> java.lang.String -> java.lang.String)")))))
+
+
+(deftest protocols-test
+  (println (h1/somemethod (h1/make-some-type) 1 1))
+  (println (h1/somemethod (h1/make-some-type) "1" "1"))
+
+  )
