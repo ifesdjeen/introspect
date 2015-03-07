@@ -17,18 +17,18 @@ errors.
 
 In order to use introspect, just add an Introspect dependency:
 
-```
-:dependencies      [introspect "1.0.0-alpha1"]]
+```clojure
+:dependencies      [[introspect "1.0.0-alpha2"]]
 ```
 
 Also, for the best experience you'll need a jvm agent: 
 
-```
+```clojure
 :jvm-opts     ["-noverify"
                ~(str
                   "-javaagent:"
                   (System/getProperty "user.home")
-                  ".m2/repository/introspect/introspect/1.0.0-alpha1/introspect-1.0.0-alpha1.jar=!!!YOUR_NAMESPACES!!!")]
+                  "/.m2/repository/introspect/introspect/1.0.0-alpha2/introspect-1.0.0-alpha2.jar=!!!YOUR_NAMESPACES!!!")]
 ```
 
 Instead of `!!!YOUR_NAMESPACES!!!`, put a comma-separated list of your namespaces.
