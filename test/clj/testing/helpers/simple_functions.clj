@@ -1,4 +1,4 @@
-(ns introspect.helpers.simple-functions)
+(ns testing.helpers.simple-functions)
 
 
 (defprotocol SomeProtocol
@@ -11,6 +11,7 @@
 
 (defn make-some-type
   [] (SomeType.))
+
 (defn constant-return-value-fn
   [input-1 input-2]
   2)
