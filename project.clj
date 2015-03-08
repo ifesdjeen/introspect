@@ -21,7 +21,7 @@
                                             ~(str
                                               "-javaagent:"
                                               (System/getProperty "user.dir")
-                                              "/target/introspect-1.0.0-SNAPSHOT-standalone.jar=introspect.helpers.simple-functions")]
+                                              "/target/introspect-1.0.0-SNAPSHOT-standalone.jar=testing.helpers.simple-functions")]
                                }}
   :dependencies      [[org.clojure/clojure            "1.6.0"]
                       [net.bytebuddy/byte-buddy-agent "0.5.3"]
