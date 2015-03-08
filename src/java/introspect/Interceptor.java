@@ -19,17 +19,18 @@ public class Interceptor {
   @RuntimeType
   public static Object intercept(@SuperCall Callable method,
                                  @This Object proxy,
-                                 @AllArguments Object[] allArguments) throws Exception{
+                                 @AllArguments Object[] allArguments) throws Throwable {
 
     Object returnValue = null;
     try {
       returnValue = method.call();
     } catch (Throwable throwable) {
-			callback.invoke(proxy, allArguments, throwable);
+      callback.invoke(proxy, allArguments, throwable);
       throwable.printStackTrace();
-			throw throwable;
+      throw throwable;
     }
 
+    System.out.println(proxy);
 		callback.invoke(proxy, allArguments, returnValue);
     return returnValue;
   }
