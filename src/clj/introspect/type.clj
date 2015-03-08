@@ -33,7 +33,7 @@
 
 (defn call-types-match?
   [current-call-args prev-calls]
-  (every?
+  (some
    (fn [previous-call-types]
      (and (same-arity? current-call-args previous-call-types)
           (or (every-pair? same-type? current-call-args previous-call-types)

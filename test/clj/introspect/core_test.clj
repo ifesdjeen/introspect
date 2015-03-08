@@ -2,22 +2,23 @@
   (:import [introspect.helpers FooChildA FooChildB ParentClass ChildClass])
   (:require [clojure.test :refer :all]
             [introspect.core :refer :all]
-            [introspect.helpers.simple-functions :as h1]))
+            [testing.helpers.simple-functions :as h1]))
 
 (deftest t-test
-  (h1/constant-return-value-fn 1 1)
+  (is (= 2 (h1/constant-return-value-fn 1 1)))
   (h1/constant-return-value-fn "1" "1")
 
   (let [types (set
                (clojure.string/split (with-out-str
                                        (t h1/constant-return-value-fn))
                                      #"\n"))]
-    (not (nil? (get types  "(java.lang.Long -> java.lang.Long -> java.lang.Long)")))
-    (not (nil? (get types  "(java.lang.Long -> java.lang.String -> java.lang.String)")))))
+    (println types)
+    (is (not (nil? (get types  "(java.lang.Long -> java.lang.Long -> java.lang.Long)"))))
+    (is (not (nil? (get types  "(java.lang.Long -> java.lang.String -> java.lang.String)"))))))
 
 
 (deftest protocols-test
-  (println (h1/somemethod (h1/make-some-type) 1 1))
+  (h1/somemethod (h1/make-some-type) 1 1)
   (println (h1/somemethod (h1/make-some-type) "1" "1"))
-
+  ;; (t h1/somemethod)
   )

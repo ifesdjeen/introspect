@@ -19,32 +19,20 @@
 
 (def ^:dynamic *print-stacktraces* false)
 
+(alter-var-root #'*out* (constantly *out*))
+
 (let [method-calls (atom {})]
   (defn introspect-function
     [class-name args return-value]
     (let [current-call-types  (conj (map type args) (type return-value))
           previous-call-types (get @method-calls class-name)]
-      ;; (println current-call-types)
-      (when (and (not (empty? previous-call-types))
-                 (nil? (get previous-call-types current-call-types))
-                 ;; TODO: check for subclassing
-                 )
-        (println
-         (str
-          "\nDetected unusual method call: "
-          (.getName (class class-name))
-          " was called with arguments \n\t"
-          (format-signature current-call-types)
-          "\nprevious calls were with\n\t"
-          (join-with-newline (map format-signature previous-call-types))))
-        (when *print-stacktraces*
-          (println "\nStacktrace:\n"
-                   (stacktrace/format-stack-trace (.getStackTrace (Thread/currentThread))))))
 
-      (swap! method-calls
-             update-in
-             [class-name]
-             #(conj (or % #{}) current-call-types))))
+      (if (or (empty? previous-call-types)
+              (itype/call-types-match? current-call-types previous-call-types))
+        (swap! method-calls
+               update-in
+               [class-name]
+               #(conj (or % #{}) current-call-types)))))
 
   (defn get-method-calls
     []
@@ -52,8 +40,14 @@
 
   (defn t
     [f]
-    (doseq [call (get @method-calls f)]
-      (println (format-signature call))))
+    (let [calls (get @method-calls f)]
+      (if (not (empty? calls))
+        (doseq [call calls]
+          (do
+            (println call)
+            (println (format-signature call))))
+        (println "No calls found"))
+      ))
 
   (Interceptor/setCallback introspect-function)
   )
