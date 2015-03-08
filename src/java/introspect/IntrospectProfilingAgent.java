@@ -17,21 +17,27 @@ public class IntrospectProfilingAgent {
   public static void initializeAgent(String name) {
     new AgentBuilder.Default()
       .rebase(ElementMatchers.nameContains(name)
-              .and(ElementMatchers.nameContains("$"))
+              // .and(ElementMatchers.nameContains("$"))
+              .and(ElementMatchers.not(ElementMatchers.nameContains("SomeProtocol")))
               .and(ElementMatchers.not(ElementMatchers.nameContains("load")))
               .and(ElementMatchers.not(ElementMatchers.nameContains("auto")))
               .and(ElementMatchers.not(ElementMatchers.nameContains("init"))))
 
       .transform(new AgentBuilder.Transformer() {
-          @Override
-            public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder,
-                                                    TypeDescription typeDescription) {
-            System.out.printf("Transforming %s\n", typeDescription.getName());
-            return builder
-              .method(ElementMatchers.named("invoke"))
-              .intercept(MethodDelegation.to(Interceptor.class));
+        @Override
+        public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription) {
+          System.out.printf("Transforming %s\n", typeDescription.getName());
+          System.out.printf("%s, isinterface: %s \n", typeDescription, typeDescription.isInterface());
+          if (!typeDescription.isInterface() && !typeDescription.isAbstract()) {
+            return builder.method(ElementMatchers.not(ElementMatchers.nameContains("toString"))
+                                                 .and(ElementMatchers.not(ElementMatchers.nameContains("hashCode")))
+                                                 .and(ElementMatchers.not(ElementMatchers.nameContains("equals"))))
+                          .intercept(MethodDelegation.to(Interceptor.class));
+          } else {
+            return builder;
           }
-        })
+        }
+      })
       .installOn(instrumentation);
   }
 
