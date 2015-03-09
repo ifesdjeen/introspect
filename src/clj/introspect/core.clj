@@ -9,6 +9,7 @@
   [types]
   (str "("
        (->> types
+            (filter identity)
             (map #(.getName %))
             (clojure.string/join " -> "))
        ")"))
@@ -47,10 +48,10 @@
             (println call)
             (println (format-signature call))))
         (println "No calls found"))
-      ))
+      )))
 
-  (Interceptor/setCallback introspect-function)
-  )
+(Interceptor/setCallback introspect-function)
+
 
 (defonce introspected-namespaces (atom #{}))
 (defn introspect-namespace
