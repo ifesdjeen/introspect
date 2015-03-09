@@ -8,6 +8,7 @@ import net.bytebuddy.instrumentation.SuperMethodCall;
 import net.bytebuddy.instrumentation.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatchers;
 
+import javax.lang.model.element.Element;
 import java.lang.instrument.Instrumentation;
 
 public class IntrospectProfilingAgent {
@@ -33,10 +34,14 @@ public class IntrospectProfilingAgent {
         public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription) {
           System.out.printf("Transforming %s\n", typeDescription.getName());
           System.out.printf("%s, isinterface: %s \n", typeDescription, typeDescription.isInterface());
-          if (!typeDescription.isInterface() && !typeDescription.isAbstract()) {
-            return builder.method(ElementMatchers.not(ElementMatchers.nameContains("toString"))
-                                                 .and(ElementMatchers.not(ElementMatchers.nameContains("hashCode")))
-                                                 .and(ElementMatchers.not(ElementMatchers.nameContains("equals"))))
+          if (!typeDescription.isInterface() && !typeDescription.isAbstract() && !typeDescription.isWrapper()) {
+            return builder.method(ElementMatchers.any()
+                                          .and(ElementMatchers.not(ElementMatchers.nameContains("methodImplCache")))
+                                          .and(ElementMatchers.not(ElementMatchers.isGetter()))
+                                          .and(ElementMatchers.not(ElementMatchers.isSetter()))
+                                          .and(ElementMatchers.not(ElementMatchers.isToString()))
+                                          .and(ElementMatchers.not(ElementMatchers.isHashCode()))
+                                          .and(ElementMatchers.not(ElementMatchers.isEquals())))
                           .intercept(MethodDelegation.to(Interceptor.class));
           } else {
             return null;
