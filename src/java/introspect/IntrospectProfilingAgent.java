@@ -39,7 +39,7 @@ public class IntrospectProfilingAgent {
                                                  .and(ElementMatchers.not(ElementMatchers.nameContains("equals"))))
                           .intercept(MethodDelegation.to(Interceptor.class));
           } else {
-            return builder;
+            return null;
           }
         }
       })
