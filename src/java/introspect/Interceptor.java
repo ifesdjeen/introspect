@@ -30,8 +30,8 @@ public class Interceptor {
       throw throwable;
     }
 
-    System.out.println(proxy);
-		callback.invoke(proxy, allArguments, returnValue);
+    // System.out.printf("___%s, returnValue: %s___\n",proxy, returnValue);
+    callback.invoke(proxy, allArguments, returnValue);
     return returnValue;
   }
 

@@ -17,11 +17,16 @@ public class IntrospectProfilingAgent {
   public static void initializeAgent(String name) {
     new AgentBuilder.Default()
       .rebase(ElementMatchers.nameContains(name)
-              // .and(ElementMatchers.nameContains("$"))
-              .and(ElementMatchers.not(ElementMatchers.nameContains("SomeProtocol")))
-              .and(ElementMatchers.not(ElementMatchers.nameContains("load")))
-              .and(ElementMatchers.not(ElementMatchers.nameContains("auto")))
-              .and(ElementMatchers.not(ElementMatchers.nameContains("init"))))
+                // .and(ElementMatchers.nameContains("$"))
+                //.and(ElementMatchers.not(ElementMatchers.nameContains("SomeProtocol")))
+                //.and(ElementMatchers.not(ElementMatchers.nameMatches("(.*)\\$fn__(\\d+)\\$__GT(.*)")))
+                //.and(ElementMatchers.not(ElementMatchers.nameMatches("(.*)\\$fn__(\\d+)\\$G__(\\d+)__(.*)")))
+                //.and(ElementMatchers.not(ElementMatchers.nameContains("G__")))
+                //.and(ElementMatchers.not(ElementMatchers.nameContains("original")))
+                //.and(ElementMatchers.not(ElementMatchers.nameContains("accessor")))
+                .and(ElementMatchers.not(ElementMatchers.nameContains("load")))
+                .and(ElementMatchers.not(ElementMatchers.nameContains("auto")))
+                .and(ElementMatchers.not(ElementMatchers.nameContains("init"))))
 
       .transform(new AgentBuilder.Transformer() {
         @Override
