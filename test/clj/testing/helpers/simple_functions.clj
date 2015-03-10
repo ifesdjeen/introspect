@@ -2,12 +2,18 @@
 
 
 (defprotocol SomeProtocol
-  (somemethod [this a b]))
+  (somemethod [this a b])
+  (somemethod2 [this a b c])
+  )
 
 (deftype SomeType []
   SomeProtocol
   (somemethod [this a b]
-    2))
+    2)
+
+  (somemethod2 [this a b c]
+    "str2")
+  )
 
 (defn make-some-type
   [] (SomeType.))
