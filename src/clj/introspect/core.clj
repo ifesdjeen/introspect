@@ -29,7 +29,7 @@
           previous-call-types (get @method-calls class-name)]
 
       (if (or (empty? previous-call-types)
-              (itype/call-types-match? current-call-types previous-call-types))
+              (not (itype/call-types-match? current-call-types previous-call-types)))
         (swap! method-calls
                update-in
                [class-name]
