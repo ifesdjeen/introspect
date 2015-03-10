@@ -18,6 +18,7 @@ public class Interceptor {
 
   @RuntimeType
   public static Object intercept(@SuperCall Callable method,
+                                 @Origin Method originalMethod,
                                  @This Object proxy,
                                  @AllArguments Object[] allArguments) throws Throwable {
 
@@ -31,7 +32,7 @@ public class Interceptor {
     }
 
     // System.out.printf("___%s, returnValue: %s___\n",proxy, returnValue);
-    callback.invoke(proxy, allArguments, returnValue);
+    callback.invoke(proxy, originalMethod, allArguments, returnValue);
     return returnValue;
   }
 
