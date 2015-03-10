@@ -24,9 +24,12 @@
 
 (let [method-calls (atom {})]
   (defn introspect-function
-    [class-name args return-value]
-    (let [current-call-types  (conj (map type args) (type return-value))
+    [caller method args return-value]
+    (let [class-name          (.getClass caller)
+          current-call-types  (conj (mapv type args) (type return-value))
           previous-call-types (get @method-calls class-name)]
+
+      (println current-call-types (.getName method))
 
       (if (or (empty? previous-call-types)
               (not (itype/call-types-match? current-call-types previous-call-types)))
