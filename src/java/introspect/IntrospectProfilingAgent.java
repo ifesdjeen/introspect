@@ -33,7 +33,7 @@ public class IntrospectProfilingAgent {
         @Override
         public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription) {
           System.out.printf("Transforming %s\n", typeDescription.getName());
-          System.out.printf("%s, isinterface: %s \n", typeDescription, typeDescription.isInterface());
+          // System.out.printf("%s, isinterface: %s \n", typeDescription, typeDescription.isInterface());
           if (!typeDescription.isInterface() && !typeDescription.isAbstract() && !typeDescription.isWrapper()) {
             return builder.method(ElementMatchers.any()
                                           .and(ElementMatchers.not(ElementMatchers.nameContains("methodImplCache")))
