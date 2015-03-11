@@ -23,8 +23,8 @@
 (defn have-common-ancestor?
   "Checks if two classes have a common ancestor"
   [inst1 inst2]
-  (let [ancestors1 (disj (ancestors inst1) Object java.io.Serializable)
-        ancestors2 (disj (ancestors inst2) Object java.io.Serializable)]
+  (let [ancestors1 (disj (ancestors inst1) Object java.io.Serializable java.lang.Comparable)
+        ancestors2 (disj (ancestors inst2) Object java.io.Serializable java.lang.Comparable)]
     (not (empty? (s/intersection ancestors1 ancestors2)))))
 
 (defn every-pair?
