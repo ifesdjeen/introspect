@@ -35,6 +35,11 @@
   [current-call-args prev-calls]
   (some
    (fn [previous-call-types]
+     ;; (println
+     ;;  'same-type? (every-pair? same-type? current-call-args previous-call-types)
+     ;;  'subtype? (every-pair? subtype? current-call-args previous-call-types)
+     ;;  'any-subtype? (every-pair? any-subtype? current-call-args previous-call-types)
+     ;;  'common-ancestor? (every-pair? have-common-ancestor? current-call-args previous-call-types))
      (and (same-arity? current-call-args previous-call-types)
           (or (every-pair? same-type? current-call-args previous-call-types)
               (every-pair? subtype? current-call-args previous-call-types)
