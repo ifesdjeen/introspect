@@ -25,17 +25,15 @@
 (let [method-calls (atom {})]
   (defn introspect-function
     [caller method args return-value]
-    (let [class-name          (.getClass caller)
+    (let [descriptor          [(.getClass caller) (.getName method)]
           current-call-types  (conj (mapv type args) (type return-value))
-          previous-call-types (get @method-calls class-name)]
-
-      (println current-call-types (.getName method))
+          previous-call-types (get @method-calls descriptor)]
 
       (if (or (empty? previous-call-types)
               (not (itype/call-types-match? current-call-types previous-call-types)))
         (swap! method-calls
                update-in
-               [class-name]
+               [descriptor]
                #(conj (or % #{}) current-call-types)))))
 
   (defn get-method-calls
@@ -43,15 +41,15 @@
     @method-calls)
 
   (defn t
-    [f]
-    (let [calls (get @method-calls f)]
-      (if (not (empty? calls))
-        (doseq [call calls]
-          (do
-            (println call)
-            (println (format-signature call))))
-        (println "No calls found"))
-      )))
+    ([f-name]
+       (t (.getClass f-name) "invoke"))
+    ([klass method]
+       (let [calls (get @method-calls [klass method])]
+         (if (not (empty? calls))
+           (doseq [call calls]
+             (println (format-signature call)))
+           (println "No calls found"))
+         ))))
 
 (Interceptor/setCallback introspect-function)
 
