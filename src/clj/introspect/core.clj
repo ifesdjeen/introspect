@@ -25,7 +25,7 @@
 (let [method-calls (atom {})]
   (defn introspect-function
     [caller method args return-value]
-    (let [descriptor          [(.getClass caller) (.getName method)]
+    (let [descriptor          [(-> caller .getClass .getName) (.getName method)]
           current-call-types  (conj (mapv type args) (type return-value))
           previous-call-types (get @method-calls descriptor)]
 
@@ -36,15 +36,30 @@
                [descriptor]
                #(conj (or % #{}) current-call-types)))))
 
+
   (defn get-method-calls
     []
     @method-calls)
+
+  (defn format-report
+    "Formats multivariate function call report"
+    []
+    (->> @method-calls
+         (filter #(> (count (second %)) 1))
+         (map (fn [[[klass method-name] argument-calls]]
+                (format "Multivariate Function Calls: `%s` \n\t\t%s\n"
+                        (if (= "invoke" method-name)
+                          klass
+                          (format "%s$%s" klass method-name))
+                        (clojure.string/join "\n\t\t"
+                                             (map format-signature argument-calls)))))
+         (clojure.string/join "\n")))
 
   (defn t
     ([f-name]
        (t (.getClass f-name) "invoke"))
     ([klass method]
-       (let [calls (get @method-calls [klass method])]
+       (let [calls (get @method-calls [(.getName klass)  method])]
          (if (not (empty? calls))
            (doseq [call calls]
              (println (format-signature call)))
@@ -56,15 +71,16 @@
 
 (defonce introspected-namespaces (atom #{}))
 (defn introspect-namespace
-  [namespace-sym]
-  (when (not (get introspected-namespaces namespace-sym))
-    (println (str "Introspecting " (name namespace-sym)))
-    (swap! introspected-namespaces conj namespace-sym)
+  [namespace]
+  (when (not (get introspected-namespaces namespace))
+    (println (str "Introspecting " namespace))
+    (swap! introspected-namespaces conj namespace)
 
-    (IntrospectProfilingAgent/initializeAgent (-> namespace-sym
+    (IntrospectProfilingAgent/initializeAgent (-> namespace
                                                   name
                                                   (.replace "-" "_")))
-    (compile namespace-sym))
+    (let [namespace-sym (symbol namespace)]
+      (compile namespace-sym)))
   ;; v.ns.name.name.replace('.', '/').replace('-','_') + "$" + munge(v.sym.name);
   )
 
@@ -82,6 +98,10 @@
   (println "|_|_| |_|\\__|_|  \\___/|___/ .__/ \\___|\\___|\\__|")
   (println "                          |_|                  ")
 
+
   (binding [*compile-path* (str (System/getProperty "user.dir") "/target/classes")]
     (doseq [n (clojure.string/split agent-args #";")]
-      (introspect-namespace (symbol n)))))
+      (introspect-namespace n)))
+
+  (.addShutdownHook (Runtime/getRuntime)
+                    (Thread. #(println (format-report)))))
