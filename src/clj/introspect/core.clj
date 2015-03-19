@@ -3,7 +3,9 @@
            [java.lang.instrument Instrumentation])
   (:require [introspect.stacktrace :as stacktrace]
             [introspect.type       :as itype]
-            [clojure.set           :as s]))
+            [clojure.set           :as s]
+            [introspect.util       :as util]
+            [cheshire.core         :as json]))
 
 (defn format-signature
   [types]
@@ -55,10 +57,21 @@
                                              (map format-signature argument-calls)))))
          (clojure.string/join "\n")))
 
+  (defn dump-report
+    []
+    (-> @method-calls
+        (util/to-json-representation)
+        (json/generate-stream
+         (clojure.java.io/writer (str (System/getProperty "user.dir") "/types.json")))))
+
   (defn t
     ([f-name]
        (t (.getClass f-name) "invoke"))
     ([klass method]
+       (when (empty? @method-calls)
+         (println "No calls logged, please make sure you've turned on the agent..."))
+
+       (let [calls (get @method-calls [klass method])]
          (if (not (empty? calls))
            (doseq [call calls]
              (println (format-signature call)))
@@ -103,4 +116,6 @@
       (introspect-namespace n)))
 
   (.addShutdownHook (Runtime/getRuntime)
-                    (Thread. #(println (format-report)))))
+                    (Thread. #(do
+                                (dump-report)
+                                (println (format-report))))))
