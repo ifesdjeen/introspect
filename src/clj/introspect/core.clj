@@ -25,7 +25,7 @@
 (let [method-calls (atom {})]
   (defn introspect-function
     [caller method args return-value]
-    (let [descriptor          [(-> caller .getClass .getName) (.getName method)]
+    (let [descriptor          [(-> caller .getClass) (.getName method)]
           current-call-types  (conj (mapv type args) (type return-value))
           previous-call-types (get @method-calls descriptor)]
 
@@ -59,7 +59,6 @@
     ([f-name]
        (t (.getClass f-name) "invoke"))
     ([klass method]
-       (let [calls (get @method-calls [(.getName klass)  method])]
          (if (not (empty? calls))
            (doseq [call calls]
              (println (format-signature call)))
