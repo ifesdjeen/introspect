@@ -4,8 +4,7 @@
   (:require [introspect.stacktrace :as stacktrace]
             [introspect.type       :as itype]
             [clojure.set           :as s]
-            [introspect.util       :as util]
-            [cheshire.core         :as json]))
+            [introspect.util       :as util]))
 
 (defn format-signature
   [types]
@@ -57,12 +56,22 @@
                                              (map format-signature argument-calls)))))
          (clojure.string/join "\n")))
 
-  (defn dump-report
+  (defn dump-path
     []
-    (-> @method-calls
-        (util/to-json-representation)
-        (json/generate-stream
-         (clojure.java.io/writer (str (System/getProperty "user.dir") "/types.json")))))
+    (str (System/getProperty "user.dir") "/types.dump"))
+
+  (defn dump-report!
+    []
+    (with-open [stream (clojure.java.io/writer (java.io.File. (dump-path)))]
+      (binding [*out*       stream
+                *print-dup* true]
+        (prn @method-calls))))
+
+  (defn restore-report!
+    []
+    (with-open [r (java.io.PushbackReader. (java.io.FileReader. (dump-path)))]
+      (reset! method-calls (read r))))
+
 
   (defn t
     ([f-name]
