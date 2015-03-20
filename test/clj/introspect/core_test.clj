@@ -21,6 +21,7 @@
     (is (= 2 (h1/somemethod inst (java.util.Date.) (java.util.Date.))))
     (is (= "str2" (h1/somemethod2 inst 1.121 1.0123 1.123123)))
 
+
     (is (= "(java.util.Date -> java.util.Date -> java.lang.Long)\n"
            (with-out-str
              (t (class inst) "somemethod"))))
