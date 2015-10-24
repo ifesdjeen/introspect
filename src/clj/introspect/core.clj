@@ -126,5 +126,5 @@
 
   (.addShutdownHook (Runtime/getRuntime)
                     (Thread. #(do
-                                (dump-report)
+                                (dump-report!)
                                 (println (format-report))))))
