@@ -24,6 +24,6 @@
                                               "/target/introspect-1.0.0-SNAPSHOT-standalone.jar=testing.helpers.simple-functions")]
                                }}
   :dependencies      [[org.clojure/clojure            "1.6.0"]
-                      [net.bytebuddy/byte-buddy-agent "0.5.6"]
-                      [net.bytebuddy/byte-buddy       "0.5.6"]]
+                      [net.bytebuddy/byte-buddy-agent "0.7-rc1"]
+                      [net.bytebuddy/byte-buddy       "0.7-rc1"]]
 )
