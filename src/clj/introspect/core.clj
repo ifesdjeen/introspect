@@ -26,10 +26,9 @@
 (let [method-calls (atom {})]
   (defn introspect-function
     [caller method args return-value]
-    (let [descriptor          [(-> caller .getClass) (.getName method)]
+    (let [descriptor          [caller method]
           current-call-types  (conj (mapv type args) (type return-value))
           previous-call-types (get @method-calls descriptor)]
-
       (if (or (empty? previous-call-types)
               (not (itype/call-types-match? current-call-types previous-call-types)))
         (swap! method-calls
@@ -75,33 +74,37 @@
 
   (defn t
     ([f-name]
-       (t (.getClass f-name) "invoke"))
+     (t (.getName (.getClass f-name)) "invoke"))
     ([klass method]
-       (when (empty? @method-calls)
-         (println "No calls logged, please make sure you've turned on the agent..."))
+     (when (empty? @method-calls)
+       (println "No calls logged, please make sure you've turned on the agent..."))
 
-       (let [calls (get @method-calls [klass method])]
-         (if (not (empty? calls))
-           (doseq [call calls]
-             (println (format-signature call)))
-           (println "No calls found"))
-         ))))
+     (let [calls (get @method-calls [klass method])]
+       (if (not (empty? calls))
+         (doseq [call calls]
+           (println (format-signature call)))
+         (println "No calls found"))
+       ))))
 
 (Interceptor/setCallback introspect-function)
 
 
 (defonce introspected-namespaces (atom #{}))
 (defn introspect-namespace
-  [namespace]
+  [namespace instrumentation]
   (when (not (get introspected-namespaces namespace))
     (println (str "Introspecting " namespace))
     (swap! introspected-namespaces conj namespace)
 
+    (let [namespace-sym (symbol namespace)]
+      (compile namespace-sym))
+
     (IntrospectProfilingAgent/initializeAgent (-> namespace
                                                   name
-                                                  (.replace "-" "_")))
-    (let [namespace-sym (symbol namespace)]
-      (compile namespace-sym)))
+                                                  (.replace "-" "_"))
+                                              instrumentation)
+
+    )
   ;; v.ns.name.name.replace('.', '/').replace('-','_') + "$" + munge(v.sym.name);
   )
 
@@ -122,7 +125,7 @@
 
   (binding [*compile-path* (str (System/getProperty "user.dir") "/target/classes")]
     (doseq [n (clojure.string/split agent-args #";")]
-      (introspect-namespace n)))
+      (introspect-namespace n instrumentation)))
 
   (.addShutdownHook (Runtime/getRuntime)
                     (Thread. #(do

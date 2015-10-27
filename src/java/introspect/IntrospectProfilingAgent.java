@@ -16,7 +16,7 @@ import java.lang.instrument.Instrumentation;
 
 public class IntrospectProfilingAgent {
 
-  private static final Instrumentation instrumentation = ByteBuddyAgent.installOnOpenJDK();
+  //private static final Instrumentation instrumentation = ByteBuddyAgent.installOnOpenJDK();
 
   private static class MethodLogger extends AdviceAdapter {
 
@@ -82,12 +82,14 @@ public class IntrospectProfilingAgent {
   }
 
 
-  public static void initializeAgent(String name) {
+  public static void initializeAgent(String name, Instrumentation instrumentation) {
+
     new AgentBuilder.Default()
-      .rebase(ElementMatchers.nameContains(name)
-                             .and(ElementMatchers.not(ElementMatchers.nameContains("load")))
-                             .and(ElementMatchers.not(ElementMatchers.nameContains("auto")))
-                             .and(ElementMatchers.not(ElementMatchers.nameContains("init"))))
+      .rebase(ElementMatchers.nameStartsWith(name)
+//                             .and(ElementMatchers.not(ElementMatchers.nameContains("load")))
+//                             .and(ElementMatchers.not(ElementMatchers.nameContains("auto")))
+//                             .and(ElementMatchers.not(ElementMatchers.nameContains("init")))
+             )
       .transform(new AgentBuilder.Transformer() {
         @Override
         public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription) {
@@ -99,9 +101,10 @@ public class IntrospectProfilingAgent {
                 private String className;
 
                 @Override
-                public void visit(int version, int access, String className, String signature, String superName, String[] interfaces) {
+                public void visit(int version, int access, String className, String signature, String superName,
+                                  String[] interfaces) {
                   super.visit(version, access, className, signature, superName, interfaces);
-                  this.className = className;
+                  this.className = className.replace("/", ".");
                 }
 
                 @Override
